@@ -1,0 +1,108 @@
+# Импортируем необходимые библиотеки
+from tkinter import *
+import random
+
+# Функция для броска кубика
+def roll_dice(num_dice, num_sides):
+    """
+    Функция броска кубика.
+
+    :param num_dice: число кубиков.
+    :param num_sides: число граней на кубике.
+    :return: кортеж результатов броска (список результатов каждого кубика) и сумму этих результатов.
+    """
+    results = []
+    total = 0
+    for i in range(num_dice):
+        roll = random.randint(1, num_sides)
+        results.append(roll)
+        total += roll
+    return results, total
+
+# Функция для добавления новых полей (количества кубиков и граней)
+def add_fields():
+    """
+    Функция для добавления новых полей (количества кубиков и граней) в GUI.
+
+    Создает новую строку с полями для ввода количества кубиков и граней, затем добавляет эти поля в список entries.
+    """
+    new_row = Frame(dice_frame)
+    new_row.pack(pady=5)
+
+    new_dice_label = Label(new_row, text="Dice: ")
+    new_dice_label.pack(side=LEFT)
+    new_dice_entry = Entry(new_row, width=5)
+    new_dice_entry.pack(side=LEFT)
+
+    new_sides_label = Label(new_row, text="Sides: ")
+    new_sides_label.pack(side=LEFT)
+    new_sides_entry = Entry(new_row, width=5)
+    new_sides_entry.pack(side=LEFT)
+
+    entries.append((new_dice_entry, new_sides_entry))
+
+# Функция для эмуляции броска кубика
+def simulate_roll():
+    """
+    Функция для эмуляции броска кубика.
+
+    Проходит по всем полям в списке entries, получает введенное количество кубиков и граней, затем бросает эти кубики
+    и добавляет результаты броска в список results. Выводит результаты броска в соответствующие поля в GUI.
+    """
+    results = []
+    total = 0
+
+    for entry in entries:
+        num_dice = int(entry[0].get())
+        num_sides = int(entry[1].get())
+        dice_results, dice_sum = roll_dice(num_dice, num_sides)
+        results.append(dice_results)
+        total += dice_sum
+
+    result_label.config(text="Results: " + str(results))
+    total_label.config(text="Total: " + str(total))
+
+# Создаем GUI
+root = Tk()
+root.title("Dice Roller")
+
+# Добавляем заголовок
+title_label = Label(root, text="Dice Roller", font=("Arial", 16))
+title_label.pack(pady=10)
+
+# Создаем фрейм для полей ввода количества кубиков и граней
+dice_frame = Frame(root)
+dice_frame.pack(pady=10)
+
+dice_label = Label(dice_frame, text="Number of Dice: ")
+dice_label.pack(side=LEFT)
+
+dice_entry = Entry(dice_frame, width=5)
+dice_entry.pack(side=LEFT)
+
+sides_label = Label(dice_frame, text="Number of Sides: ")
+sides_label.pack(side=LEFT)
+
+sides_entry = Entry(dice_frame, width=5)
+sides_entry.pack(side=LEFT)
+
+# Добавляем кнопку для добавления новых полей
+add_button = Button(dice_frame, text="Add New Field", command=add_fields)
+add_button.pack(side=LEFT, padx=5)
+
+# Создаем список entries и добавляем в него первую пару полей
+entries = [(dice_entry, sides_entry)]
+
+# Добавляем кнопку для эмуляции броска кубика
+roll_button = Button(root, text="Roll Dice", command=simulate_roll)
+roll_button.pack(pady=10)
+
+# Добавляем метки для вывода результатов броска
+result_label = Label(root, text="Results: ")
+result_label.pack()
+
+total_label = Label(root, text="Total: ")
+total_label.pack()
+
+# Запускаем главный цикл обработки событий
+root.mainloop()
